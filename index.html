@@ -82,7 +82,7 @@ var renderRequested;
 rAFThrottler(0, true);
 
 addEventListener('message', function (ev) {
-  console.log(ev.origin);
+  console.log(ev.origin + ': ' + JSON.stringify(ev.data));
   storageObject = JSON.parse(ev.data);
   rAFThrottler();
 }, false);
