@@ -56,7 +56,7 @@ th, td {
     <tbody>
     </tbody>
   </table>
-  <a href="javascript:(function(){var c=window.open('https://yesasha.github.io/cross-domain-storage-explorer/','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),e=setInterval(function(){c.closed&&(alert('Closed!'),clearTimeout(e))},1E3);window.addEventListener('message',function(a){if('https://yesasha.github.io'===a.origin&&'ready'===a.data){a={};for(var b=0;b<window.localStorage.length;b++){var d=window.localStorage.key(b);a[d]=window.localStorage.getItem(d)}c.postMessage(JSON.stringify(a),'https://yesasha.github.io')}},!1)})();">Cross Domain LocalStorage</a>
+  <a href="javascript:(function(){var c=window.open('https://yesasha.github.io/cross-domain-storage-explorer/','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),e=setInterval(function(){c.closed&&(alert('Closed!'),clearTimeout(e))},1E3);window.addEventListener('message',function(a){if('https://yesasha.github.io'===a.origin&&'ready'===a.data){a={};for(var b=0;b<window.localStorage.length;b++){var d=window.localStorage.key(b);a[d]=window.localStorage.getItem(d)}c.postMessage({storage:JSON.stringify(a)},'https://yesasha.github.io')}},!1)})();">Cross Domain LocalStorage</a>
 </main>
 <script type="text/javascript">
 // Get all needed elements
@@ -81,9 +81,10 @@ var renderRequested;
 rAFThrottler(0, true);
 
 addEventListener('message', function (ev) {
-  console.log(ev.origin + ': ' + JSON.stringify(ev.data));
-  storageObject = JSON.parse(ev.data);
-  rAFThrottler();
+  if (ev.data.storage) {
+    storageObject = JSON.parse(ev.data.storage);
+    rAFThrottler();
+  }
 }, false);
 
 window.opener.postMessage('ready', '*');
