@@ -8,7 +8,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-<title>LocalStorage Explorer</title>
+<title>Cross Domain Storage Explorer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel='stylesheet' href='https://www.w3schools.com/w3css/4/w3.css'>
 <style type="text/css">
@@ -34,7 +34,7 @@ th, td {
 </head>
 <body>
 <main class="w3-container">
-  <h1>LocalStorage Explorer</h1>
+  <h1>Cross Domain Storage Explorer</h1>
   <div class="w3-panel w3-pale-red w3-leftbar w3-border-red status">
     <p>LocalStorage is not available...</p>
   </div>
@@ -80,8 +80,10 @@ var sortingCol;
 var renderRequested;
 rAFThrottler(0, true);
 
+var thatOrigin;
 addEventListener('message', function (ev) {
   if (ev.data.storage) {
+    thatOrigin = ev.origin;
     storageObject = JSON.parse(ev.data.storage);
     rAFThrottler();
   }
@@ -125,11 +127,11 @@ function render (col, dir) {
   var keys = Object.keys(storageObject);
 
   if (keys.length === 0) {
-    myStatus.innerHTML = '<p>LocalStorage is empty...</p>';
+    myStatus.innerHTML = '<h3>' + thatOrigin + ':</h3><p>LocalStorage is empty...</p>';
   } else if (keys.length === 1) {
-    myStatus.innerHTML = '<p>You have 1 item in localStorage.</p>';
+    myStatus.innerHTML = '<h3>' + thatOrigin + ':<p>You have 1 item in localStorage.</p>';
   } else {
-    myStatus.innerHTML = '<p>You have ' + keys.length + ' items in localStorage.</p>';
+    myStatus.innerHTML = '<h3>' + thatOrigin + ':<p>You have ' + keys.length + ' items in localStorage.</p>';
   }
 
   // Remove all sorting classes from table header row
