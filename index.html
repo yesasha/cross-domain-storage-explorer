@@ -56,7 +56,7 @@ th, td {
     <tbody>
     </tbody>
   </table>
-  <a href="javascript:(function(){for(var b=window.open('https://yesasha.github.io/cross-domain-storage-explorer/','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),e=setInterval(function(){b.closed&&(alert('Closed!'),clearTimeout(e))},1E3),c={},a=0;a<window.localStorage.length;a++){var d=window.localStorage.key(a);c[d]=window.localStorage.getItem(d)}b.postMessage(JSON.stringify(c),'https://yesasha.github.io')})();">Cross Domain LocalStorage</a>
+  <a href="javascript:(function(){var c=window.open('https://yesasha.github.io/cross-domain-storage-explorer/','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),e=setInterval(function(){c.closed&&(alert('Closed!'),clearTimeout(e))},1E3);window.addEventListener('message',function(a){if('https://yesasha.github.io'===a.origin&&'ready'===a.data){a={};for(var b=0;b<window.localStorage.length;b++){var d=window.localStorage.key(b);a[d]=window.localStorage.getItem(d)}c.postMessage(JSON.stringify(a),'https://yesasha.github.io')}},!1)})();">Cross Domain LocalStorage</a>
 </main>
 <script type="text/javascript">
 // Get all needed elements
@@ -85,6 +85,8 @@ addEventListener('message', function (ev) {
   storageObject = JSON.parse(ev.data);
   rAFThrottler();
 }, false);
+
+window.opener.postMessage('ready', '*');
 
 // Click handler
 myTable.addEventListener('click', function (ev) {
