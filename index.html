@@ -56,7 +56,7 @@ th, td {
     <tbody>
     </tbody>
   </table>
-  <a href="javascript:(function(){var d=open('{{href}}/cross-domain-storage-explorer/','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),e={},a=localStorage,b,c=0;addEventListener('message',function(f){if(f.source===d){for(;c<a.length;c++)b=a.key(c),e[b]=a.getItem(b);d.postMessage({type:'localStorage',data:JSON.stringify(e)},'*')}},!1)})();">Cross Domain LocalStorage</a>
+  <a href="javascript:(function(){var d=open('{{href}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),e={},a=localStorage,b,c=0;addEventListener('message',function(f){if(f.source===d){for(;c<a.length;c++)b=a.key(c),e[b]=a.getItem(b);d.postMessage({type:'localStorage',data:JSON.stringify(e)},'*')}},!1)})();">Cross Domain LocalStorage</a>
 </main>
 <script type="text/javascript">
 // Get all needed elements
