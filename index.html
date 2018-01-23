@@ -113,12 +113,10 @@ myTable.addEventListener('click', function (ev) {
       storageObject = {};
       rAFThrottler();
     }
-  } else if (classList.contains('index')) {
-    rAFThrottler(0, direction);
   } else if (classList.contains('key')) {
-    rAFThrottler(1, direction);
+    rAFThrottler(0, direction);
   } else if (classList.contains('value')) {
-    rAFThrottler(2, direction);
+    rAFThrottler(1, direction);
   }
 }, false);
 
@@ -139,7 +137,7 @@ function render (col, dir) {
   }
 
   // Remove all sorting classes from table header row
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 2; i++) {
     th[i].classList.remove('asc');
     th[i].classList.remove('dsc');
   }
@@ -153,7 +151,7 @@ function render (col, dir) {
   // storageObject to array
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
-    newArr[i] = [i, key, storageObject[key]];
+    newArr[i] = [key, storageObject[key]];
   }
 
   // Sort according to current user selected method
@@ -167,18 +165,15 @@ function render (col, dir) {
     var newRow = newArr[i];
     if (tr[i]) {
       var cells = tr[i].cells;
-      if (!oldRow || oldRow[0] !== newRow[0]) { // Index
+      if (!oldRow || oldRow[0] !== newRow[0]) { // Key
           cells[0].textContent = newRow[0];
       }
-      if (!oldRow || oldRow[1] !== newRow[1]) { // Key
+      if (!oldRow || oldRow[1] !== newRow[1]) { // Value
           cells[1].textContent = newRow[1];
-          cells[3].setAttribute('data-key', newRow[1]); // Delete button
-      }
-      if (!oldRow || oldRow[2] !== newRow[2]) { // Value
-          cells[2].textContent = newRow[2];
+          cells[2].setAttribute('data-key', newRow[1]); // Delete button
       }
     } else {
-      myTbody.insertAdjacentHTML('beforeend', '<tr><td>' + newRow[0] + '</td><td>' + newRow[1] + '</td><td>' + newRow[2] + '</td><td class="w3-button del" title="Delete this item" data-key="' + newRow[1] + '">&#x2716;</td></tr>');
+      myTbody.insertAdjacentHTML('beforeend', '<tr><td>' + newRow[0] + '</td><td>' + newRow[1] + '</td><td class="w3-button del" title="Delete this item" data-key="' + newRow[0] + '">&#x2716;</td></tr>');
     }
   }
   
