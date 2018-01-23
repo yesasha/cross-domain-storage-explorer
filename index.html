@@ -91,7 +91,7 @@ addEventListener('message', function (ev) {
   }
 }, false);
 
-window.opener.postMessage('ready', '*');
+window.opener && window.opener.postMessage('ready', '*');
 
 myBookmarklet.href = myBookmarklet.href.replace('{{href}}', location.href);
 
