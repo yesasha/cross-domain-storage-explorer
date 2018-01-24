@@ -98,20 +98,32 @@ myTable.addEventListener('click', function (ev) {
   var direction = !classList.contains('asc');
   if (classList.contains('set')) {
     key.focus();
-    // storageObject[key.value.trim()] = val.value.trim();
-    window.opener.postMessage({type: 'set', key: key.value.trim(), value: val.value.trim()}, '*');
+    if (window.opener) {
+      window.opener.postMessage({type: 'set', key: key.value.trim(), value: val.value.trim()}, '*');
+    } else {
+      // storageObject[key.value.trim()] = val.value.trim();
+      localStorage.setItem(key.value.trim(), val.value.trim());
+      rAFThrottler();
+    }
     key.value = '';
     val.value = '';
-    // rAFThrottler();
   } else if (classList.contains('remove')) {
-    // delete storageObject[ev.target.getAttribute('data-key')];
-    window.opener.postMessage({type: 'remove', key: ev.target.getAttribute('data-key')}, '*');
-    // rAFThrottler();
+    if (window.opener) {
+      window.opener.postMessage({type: 'remove', key: ev.target.getAttribute('data-key')}, '*');
+    } else {
+      // delete storageObject[ev.target.getAttribute('data-key')];
+      localStorage.removeItem(ev.target.getAttribute('data-key'));
+      rAFThrottler();
+    }
   } else if (classList.contains('clear')) {
     if (confirm("Are you sure you want to delete all items?")) {
-      //storageObject = {};
-      window.opener.postMessage({type: 'clear'}, '*');
-      //rAFThrottler();
+      if (window.opener) {
+        window.opener.postMessage({type: 'clear'}, '*');
+      } else {
+        // storageObject = {};
+        localStorage.clear();
+        rAFThrottler();
+      }
     }
   } else if (classList.contains('key')) {
     rAFThrottler(0, direction);
@@ -130,11 +142,18 @@ function render (col, dir) {
   myStatus.classList.add('w3-pale-green');
   myStatus.classList.add('w3-border-green');
 
-  var keys = Object.keys(storageObject);
 
-  if (keys.length === 0) {
+
+  if (window.opener) {
+    var keys = Object.keys(storageObject);
+    var length = keys.length;
+  } else {
+    var length = localStorage.length;
+  }
+
+  if (length === 0) {
     myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>LocalStorage is empty...</p>';
-  } else if (keys.length === 1) {
+  } else if (length === 1) {
     myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have 1 item in localStorage.</p>';
   } else {
     myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + keys.length + ' items in localStorage.</p>';
@@ -152,10 +171,18 @@ function render (col, dir) {
   // New array representation
   var newArr = [];
 
-  // storageObject to array
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    newArr[i] = [key, storageObject[key]];
+  if (window.opener) {
+    // storageObject to array
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      newArr[i] = [key, storageObject[key]];
+    }
+  } else {
+    // localStorage to array
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      newArr[i] = [i, key, localStorage.getItem(key)];
+    }
   }
 
   // Sort according to current user selected method
