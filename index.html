@@ -86,7 +86,7 @@ addEventListener('message', function (ev) {
   }
 }, false);
 
-window.opener && window.opener.postMessage('load', '*');
+window.opener && window.opener.postMessage({type: 'load'}, '*');
 
 myBookmarklet.href = myBookmarklet.href.replace('{{href}}', location.href);
 
