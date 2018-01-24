@@ -79,7 +79,7 @@ var sortingCol;
 var renderRequested;
 rAFThrottler(0, true);
 
-var thatOrigin;
+var thatOrigin = location.origin;
 addEventListener('message', function (ev) {
   if (ev.data.localStorage) {
     thatOrigin = ev.origin;
