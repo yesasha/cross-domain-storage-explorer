@@ -59,6 +59,7 @@ th, td {
 var main = document.querySelector('main');
 var myStatus = main.querySelector('.status');
 var myBookmarklet = main.querySelector('a');
+reloadButton = main.querySelector('button');
 var myTable = document.getElementsByTagName('table')[0];
 var key = myTable.getElementsByTagName('input');
 var val = key[1];
@@ -117,6 +118,10 @@ myTable.addEventListener('click', function (ev) {
   } else if (classList.contains('value')) {
     rAFThrottler(1, direction);
   }
+}, false);
+
+reloadButton.addEventListener('click', function (ev) {
+  window.opener && window.opener.postMessage({type: 'load'}, '*');
 }, false);
 
 function render (col, dir) {
