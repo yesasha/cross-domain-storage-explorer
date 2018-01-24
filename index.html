@@ -142,8 +142,6 @@ function render (col, dir) {
   myStatus.classList.add('w3-pale-green');
   myStatus.classList.add('w3-border-green');
 
-
-
   if (window.opener) {
     var keys = Object.keys(storageObject);
     var length = keys.length;
@@ -181,7 +179,7 @@ function render (col, dir) {
     // localStorage to array
     for (var i = 0; i < localStorage.length; i++) {
       var key = localStorage.key(i);
-      newArr[i] = [i, key, localStorage.getItem(key)];
+      newArr[i] = [key, localStorage.getItem(key)];
     }
   }
 
