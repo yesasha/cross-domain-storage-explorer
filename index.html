@@ -31,6 +31,11 @@ th, td {
 </head>
 <body>
 <main class="w3-container">
+  <div class="w3-bar w3-light-grey">
+    <button class="w3-bar-item w3-button">localStorage</button>
+    <button class="w3-bar-item w3-button">sessionStorage</button>
+    <button class="w3-bar-item w3-button">cookies</button>
+  </div>
   <h1>Cross Domain Storage Explorer</h1>
   <a href="javascript:(function(){var d='{{origin}}',c=localStorage,e,a,b;if(location.origin!==d){var f=open(d+'{{pathname}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no');addEventListener('message',function(g){if(g.source===f){b=g.data;a=b.type;if('load'!==a)if('clear'===a)c.clear();else if('set'===a)c.setItem(b.key,b.value);else if('remove'===a)c.removeItem(b.key);else return;b={};for(a=0;a<c.length;a++)e=c.key(a),b[e]=c.getItem(e);f.postMessage({localStorage:JSON.stringify(b)},d)}},!1)}})();">Cross Domain Storage</a>
   <button class="w3-button">Reload</button>
