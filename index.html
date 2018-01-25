@@ -31,9 +31,9 @@ th, td {
 </head>
 <body>
 <div class="w3-bar w3-light-grey tabbar">
-  <button class="w3-bar-item w3-button w3-dark-grey">localStorage</button>
-  <button class="w3-bar-item w3-button">sessionStorage</button>
-  <button class="w3-bar-item w3-button">cookies</button>
+  <button class="w3-bar-item w3-button w3-dark-grey localStorage">localStorage</button>
+  <button class="w3-bar-item w3-button sessionStorage">sessionStorage</button>
+  <button class="w3-bar-item w3-button cookies">cookies</button>
 </div>
 <main class="w3-container">
   <h1>Storage Explorer</h1>
@@ -83,6 +83,9 @@ var storageObject = {};
 var sortingDirection;
 var sortingCol;
 
+// Which storage
+var activeStorage = 'localStorage';
+
 var renderRequested;
 rAFThrottler(0, true);
 
@@ -95,7 +98,7 @@ addEventListener('message', function (ev) {
   }
 }, false);
 
-window.opener && window.opener.postMessage({type: 'getItem', storage: 'localStorage'}, '*');
+window.opener && window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
 
 myBookmarklet.href = myBookmarklet.href.replace('{{origin}}', location.origin).replace('{{pathname}}', location.pathname);
 
@@ -106,29 +109,29 @@ myTable.addEventListener('click', function (ev) {
   if (classList.contains('set')) {
     key.focus();
     if (window.opener) {
-      window.opener.postMessage({type: 'setItem', storage: 'localStorage', key: key.value.trim(), value: val.value.trim()}, '*');
+      window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
     } else {
       // storageObject[key.value.trim()] = val.value.trim();
-      localStorage.setItem(key.value.trim(), val.value.trim());
+      window[activeStorage].setItem(key.value.trim(), val.value.trim());
       rAFThrottler();
     }
     key.value = '';
     val.value = '';
   } else if (classList.contains('remove')) {
     if (window.opener) {
-      window.opener.postMessage({type: 'removeItem', storage: 'localStorage', key: ev.target.getAttribute('data-key')}, '*');
+      window.opener.postMessage({type: 'removeItem', storage: activeStorage, key: ev.target.getAttribute('data-key')}, '*');
     } else {
       // delete storageObject[ev.target.getAttribute('data-key')];
-      localStorage.removeItem(ev.target.getAttribute('data-key'));
+      window[activeStorage].removeItem(ev.target.getAttribute('data-key'));
       rAFThrottler();
     }
   } else if (classList.contains('clear')) {
     if (confirm("Are you sure you want to delete all items?")) {
       if (window.opener) {
-        window.opener.postMessage({type: 'clear', storage: 'localStorage'}, '*');
+        window.opener.postMessage({type: 'clear', storage: activeStorage}, '*');
       } else {
         // storageObject = {};
-        localStorage.clear();
+        window[activeStorage].clear();
         rAFThrottler();
       }
     }
@@ -140,7 +143,7 @@ myTable.addEventListener('click', function (ev) {
 }, false);
 
 reloadButton.addEventListener('click', function (ev) {
-  window.opener && window.opener.postMessage({type: 'getItem', storage: 'localStorage'}, '*');
+  window.opener && window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
 }, false);
 
 myTabBar.addEventListener('click', function (ev) {
@@ -150,6 +153,15 @@ myTabBar.addEventListener('click', function (ev) {
       myTabButtons[i].classList.remove('w3-dark-grey');
     }
     ev.target.classList.add('w3-dark-grey');
+    if (target.classList.contains('localStorage')) {
+      activeStorage = 'localStorage';
+    } else if (target.classList.contains('sessionStorage')) {
+      activeStorage = 'sessionStorage';
+    } else if (target.classList.contains('cookies')) {
+      activeStorage = 'cookies';
+    }
+
+    window.opener && window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
   }
 }, false);
 
@@ -163,15 +175,15 @@ function render (col, dir) {
     var keys = Object.keys(storageObject);
     var length = keys.length;
   } else {
-    var length = localStorage.length;
+    var length = window[activeStorage].length;
   }
 
   if (length === 0) {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>LocalStorage is empty...</p>';
+    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>' + activeStorage + ' is empty...</p>';
   } else if (length === 1) {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have 1 item in localStorage.</p>';
+    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have 1 item in ' + activeStorage + '.</p>';
   } else {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + length + ' items in localStorage.</p>';
+    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + length + ' items in ' + activeStorage + '.</p>';
   }
 
   // Remove all sorting classes from table header row
@@ -194,9 +206,9 @@ function render (col, dir) {
     }
   } else {
     // localStorage to array
-    for (var i = 0; i < localStorage.length; i++) {
-      var key = localStorage.key(i);
-      newArr[i] = [key, localStorage.getItem(key)];
+    for (var i = 0; i < window[activeStorage].length; i++) {
+      var key = window[activeStorage].key(i);
+      newArr[i] = [key, window[activeStorage].getItem(key)];
     }
   }
 
