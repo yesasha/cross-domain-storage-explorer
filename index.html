@@ -143,7 +143,11 @@ myTable.addEventListener('click', function (ev) {
 }, false);
 
 reloadButton.addEventListener('click', function (ev) {
-  window.opener && window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+  if (window.opener) {
+    window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+  } else {
+    rAFThrottler();
+  }
 }, false);
 
 myTabBar.addEventListener('click', function (ev) {
