@@ -36,7 +36,7 @@ th, td {
   <button class="w3-bar-item w3-button">cookies</button>
 </div>
 <main class="w3-container">
-  <h1>Storage Explorer</h1>
+<!--   <h1>Storage Explorer</h1> -->
   <a href="javascript:(function(c,h,e,f,g,d,a,b){e!==location.origin&&(f=open(e+'{{pathname}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),addEventListener('message',function(k){if(k.source===f){a=k.data;b=a.storage;if('localStorage'===b||'sessionStorage'===b){c[b][a.type](a.key,a.value);a={};for(d=0;d<c[b].length;d++)g=c[b].key(d),a[g]=c[b].getItem(g);a=JSON.stringify(a)}else if('cookie'===b)h[b]=a.value,a=h[b];else return;f.postMessage({storage:b,data:a},e)}},!1))})(window,document,'{{origin}}');">Storage Explorer</a>
   <button class="w3-button">Reload</button>
   <div class="w3-panel w3-pale-red w3-leftbar w3-border-red status">
