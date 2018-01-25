@@ -144,10 +144,13 @@ reloadButton.addEventListener('click', function (ev) {
 }, false);
 
 myTabBar.addEventListener('click', function (ev) {
-  for (var i = 0; i < myTabButtons.length; i++) {
-    myTabButtons[i].classList.remove('w3-dark-grey');
+  var target = ev.target;
+  if (target.tagName === 'BUTTON') {
+    for (var i = 0; i < myTabButtons.length; i++) {
+      myTabButtons[i].classList.remove('w3-dark-grey');
+    }
+    ev.target.classList.add('w3-dark-grey');
   }
-  ev.target.classList.add('w3-dark-grey');
 }, false);
 
 function render (col, dir) {
