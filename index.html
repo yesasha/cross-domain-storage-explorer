@@ -30,7 +30,7 @@ th, td {
 </style>
 </head>
 <body>
-<div class="w3-bar w3-light-grey">
+<div class="w3-bar w3-light-grey tabbar">
   <button class="w3-bar-item w3-button w3-dark-grey">localStorage</button>
   <button class="w3-bar-item w3-button">sessionStorage</button>
   <button class="w3-bar-item w3-button">cookies</button>
@@ -64,7 +64,9 @@ th, td {
 var main = document.querySelector('main');
 var myStatus = main.querySelector('.status');
 var myBookmarklet = main.querySelector('a');
-reloadButton = main.querySelector('button');
+var reloadButton = main.querySelector('button');
+var myTabBar = document.querySelector('.tabbar');
+var myTabButtons = myTabBar.getElementsByTagName('button');
 var myTable = document.getElementsByTagName('table')[0];
 var key = myTable.getElementsByTagName('input');
 var val = key[1];
@@ -139,6 +141,13 @@ myTable.addEventListener('click', function (ev) {
 
 reloadButton.addEventListener('click', function (ev) {
   window.opener && window.opener.postMessage({type: 'load'}, '*');
+}, false);
+
+myTabBar.addEventListener('click', function (ev) {
+  for (var i = 0; i < myTabButtons.length; i++) {
+    myTabButtons[i].classList.remove('w3-dark-grey');
+  }
+  ev.target.classList.add('w3-dark-grey');
 }, false);
 
 function render (col, dir) {
