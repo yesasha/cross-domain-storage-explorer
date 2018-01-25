@@ -212,11 +212,11 @@ function render (col, dir) {
     if (tr[i]) {
       var cells = tr[i].cells;
       if (!oldRow || oldRow[0] !== newRow[0]) { // Key
-          cells[0].textContent = newRow[0];
+        cells[0].textContent = newRow[0];
+        cells[2].setAttribute('data-key', newRow[0]); // Delete button
       }
       if (!oldRow || oldRow[1] !== newRow[1]) { // Value
-          cells[1].textContent = newRow[1];
-          cells[2].setAttribute('data-key', newRow[0]); // Delete button
+        cells[1].textContent = newRow[1];
       }
     } else {
       myTbody.insertAdjacentHTML('beforeend', '<tr><td>' + newRow[0] + '</td><td>' + newRow[1] + '</td><td class="w3-button remove" title="Delete this item" data-key="' + newRow[0] + '">&#x2716;</td></tr>');
