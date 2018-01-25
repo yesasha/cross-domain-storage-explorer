@@ -37,7 +37,7 @@ th, td {
 </div>
 <main class="w3-container">
   <h1>Cross Domain Storage Explorer</h1>
-  <a href="javascript:(function(){var d='{{origin}}',c=localStorage,e,a,b;if(location.origin!==d){var f=open(d+'{{pathname}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no');addEventListener('message',function(g){if(g.source===f){b=g.data;a=b.type;if('load'!==a)if('clear'===a)c.clear();else if('set'===a)c.setItem(b.key,b.value);else if('remove'===a)c.removeItem(b.key);else return;b={};for(a=0;a<c.length;a++)e=c.key(a),b[e]=c.getItem(e);f.postMessage({localStorage:JSON.stringify(b)},d)}},!1)}})();">Cross Domain Storage</a>
+  <a href="javascript:(function(c,h,e,f,g,d,a,b){e!==location.origin&&(f=open(e+'{{pathname}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),addEventListener('message',function(k){if(k.source===f){a=k.data;b=a.storage;if('localStorage'===b||'sessionStorage'===b){c[b][a.type](a.key,a.value);a={};for(d=0;d<c[b].length;d++)g=c[b].key(d),a[g]=c[b].getItem(g);a=JSON.stringify(a)}else if('cookie'===b)h[b]=a.value,a=h[b];else return;f.postMessage({storage:b,data:a},e)}},!1))})(window,document,'{{origin}}');">Cross Domain Storage</a>
   <button class="w3-button">Reload</button>
   <div class="w3-panel w3-pale-red w3-leftbar w3-border-red status">
     <p>LocalStorage is not available...</p>
@@ -95,7 +95,7 @@ addEventListener('message', function (ev) {
   }
 }, false);
 
-window.opener && window.opener.postMessage({type: 'load'}, '*');
+window.opener && window.opener.postMessage({type: 'getItem'}, '*');
 
 myBookmarklet.href = myBookmarklet.href.replace('{{origin}}', location.origin).replace('{{pathname}}', location.pathname);
 
@@ -106,7 +106,7 @@ myTable.addEventListener('click', function (ev) {
   if (classList.contains('set')) {
     key.focus();
     if (window.opener) {
-      window.opener.postMessage({type: 'set', key: key.value.trim(), value: val.value.trim()}, '*');
+      window.opener.postMessage({type: 'setItem', key: key.value.trim(), value: val.value.trim()}, '*');
     } else {
       // storageObject[key.value.trim()] = val.value.trim();
       localStorage.setItem(key.value.trim(), val.value.trim());
@@ -116,7 +116,7 @@ myTable.addEventListener('click', function (ev) {
     val.value = '';
   } else if (classList.contains('remove')) {
     if (window.opener) {
-      window.opener.postMessage({type: 'remove', key: ev.target.getAttribute('data-key')}, '*');
+      window.opener.postMessage({type: 'removeItem', key: ev.target.getAttribute('data-key')}, '*');
     } else {
       // delete storageObject[ev.target.getAttribute('data-key')];
       localStorage.removeItem(ev.target.getAttribute('data-key'));
@@ -140,7 +140,7 @@ myTable.addEventListener('click', function (ev) {
 }, false);
 
 reloadButton.addEventListener('click', function (ev) {
-  window.opener && window.opener.postMessage({type: 'load'}, '*');
+  window.opener && window.opener.postMessage({type: 'getItem'}, '*');
 }, false);
 
 myTabBar.addEventListener('click', function (ev) {
