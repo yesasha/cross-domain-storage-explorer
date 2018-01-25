@@ -216,7 +216,7 @@ function render (col, dir) {
       }
       if (!oldRow || oldRow[1] !== newRow[1]) { // Value
           cells[1].textContent = newRow[1];
-          cells[2].setAttribute('data-key', newRow[1]); // Delete button
+          cells[2].setAttribute('data-key', newRow[0]); // Delete button
       }
     } else {
       myTbody.insertAdjacentHTML('beforeend', '<tr><td>' + newRow[0] + '</td><td>' + newRow[1] + '</td><td class="w3-button remove" title="Delete this item" data-key="' + newRow[0] + '">&#x2716;</td></tr>');
