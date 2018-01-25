@@ -95,7 +95,7 @@ addEventListener('message', function (ev) {
   }
 }, false);
 
-window.opener && window.opener.postMessage({type: 'getItem'}, '*');
+window.opener && window.opener.postMessage({type: 'getItem', storage: 'localStorage'}, '*');
 
 myBookmarklet.href = myBookmarklet.href.replace('{{origin}}', location.origin).replace('{{pathname}}', location.pathname);
 
@@ -106,7 +106,7 @@ myTable.addEventListener('click', function (ev) {
   if (classList.contains('set')) {
     key.focus();
     if (window.opener) {
-      window.opener.postMessage({type: 'setItem', key: key.value.trim(), value: val.value.trim()}, '*');
+      window.opener.postMessage({type: 'setItem', storage: 'localStorage', key: key.value.trim(), value: val.value.trim()}, '*');
     } else {
       // storageObject[key.value.trim()] = val.value.trim();
       localStorage.setItem(key.value.trim(), val.value.trim());
@@ -116,7 +116,7 @@ myTable.addEventListener('click', function (ev) {
     val.value = '';
   } else if (classList.contains('remove')) {
     if (window.opener) {
-      window.opener.postMessage({type: 'removeItem', key: ev.target.getAttribute('data-key')}, '*');
+      window.opener.postMessage({type: 'removeItem', storage: 'localStorage', key: ev.target.getAttribute('data-key')}, '*');
     } else {
       // delete storageObject[ev.target.getAttribute('data-key')];
       localStorage.removeItem(ev.target.getAttribute('data-key'));
@@ -125,7 +125,7 @@ myTable.addEventListener('click', function (ev) {
   } else if (classList.contains('clear')) {
     if (confirm("Are you sure you want to delete all items?")) {
       if (window.opener) {
-        window.opener.postMessage({type: 'clear'}, '*');
+        window.opener.postMessage({type: 'clear', storage: 'localStorage'}, '*');
       } else {
         // storageObject = {};
         localStorage.clear();
@@ -140,7 +140,7 @@ myTable.addEventListener('click', function (ev) {
 }, false);
 
 reloadButton.addEventListener('click', function (ev) {
-  window.opener && window.opener.postMessage({type: 'getItem'}, '*');
+  window.opener && window.opener.postMessage({type: 'getItem', storage: 'localStorage'}, '*');
 }, false);
 
 myTabBar.addEventListener('click', function (ev) {
