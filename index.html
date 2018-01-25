@@ -91,7 +91,7 @@ rAFThrottler(0, true);
 
 var thatOrigin = location.origin;
 addEventListener('message', function (ev) {
-  if (ev.data.storage === 'localStorage') {
+  if (ev.data.storage === activeStorage) {
     thatOrigin = ev.origin;
     storageObject = JSON.parse(ev.data.data);
     rAFThrottler();
@@ -161,7 +161,11 @@ myTabBar.addEventListener('click', function (ev) {
       activeStorage = 'cookies';
     }
 
-    window.opener && window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+    if (window.opener) {
+      window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+    } else {
+      rAFThrottler();
+    }
   }
 }, false);
 
