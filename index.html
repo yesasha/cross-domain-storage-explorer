@@ -88,9 +88,9 @@ rAFThrottler(0, true);
 
 var thatOrigin = location.origin;
 addEventListener('message', function (ev) {
-  if (ev.data.localStorage) {
+  if (ev.data.storage === 'localStorage') {
     thatOrigin = ev.origin;
-    storageObject = JSON.parse(ev.data.localStorage);
+    storageObject = JSON.parse(ev.data.data);
     rAFThrottler();
   }
 }, false);
