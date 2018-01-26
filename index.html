@@ -99,6 +99,7 @@ addEventListener('message', function (ev) {
     rAFThrottler();
   } else if (ev.data.storage === 'cookie') {
     thatOrigin = ev.origin;
+    console.log(ev.data.data);
     var cookie = ev.data.data.split('; ');
     storageObject = {};
     for (var i = 0; i < cookie.length; i++) {
