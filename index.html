@@ -100,9 +100,11 @@ addEventListener('message', function (ev) {
   } else if (ev.data.storage === 'cookie') {
     var cookie = document.cookie.split('; ');
     storageObject = {};
-    for (var i = 0; i < newArr.length; i++) {
+    for (var i = 0; i < cookie.length; i++) {
       cookie[i] = cookie[i].split('=');
-      storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
+      if (cookie[i].length === 2) {
+        storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
+      }
     }
   }
 }, false);
