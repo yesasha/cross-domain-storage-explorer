@@ -43,7 +43,6 @@ th, td {
   <div class="w3-panel w3-pale-red w3-leftbar w3-border-red status">
     <h3>localhost</h3>
     <p>LocalStorage is not available...</p>
-    <button class="w3-button">Reload</button>
   </div>
   <table class="w3-table w3-section">
     <thead>
@@ -73,9 +72,6 @@ var myStatusMessage = myStatus.querySelector('p');
 
 // Bookmarklet
 var myBookmarklet = main.querySelector('a');
-
-// Reload Button
-var reloadButton = main.querySelector('button');
 
 // Tabs
 var myTabBar = document.querySelector('.tabbar');
@@ -187,14 +183,6 @@ myTable.addEventListener('click', function (ev) {
     rAFThrottler(0, direction);
   } else if (classList.contains('value')) {
     rAFThrottler(1, direction);
-  }
-}, false);
-
-reloadButton.addEventListener('click', function (ev) {
-  if (window.opener) {
-    window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
-  } else {
-    rAFThrottler();
   }
 }, false);
 
