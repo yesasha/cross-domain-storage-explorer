@@ -203,9 +203,14 @@ myTabBar.addEventListener('click', function (ev) {
       activeStorage = 'Web SQL';
     }
 
-    if (window.opener) {
-      window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+    if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage' || activeStorage === 'cookie') {
+      if (window.opener) {
+        window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+      } else {
+        rAFThrottler();
+      }
     } else {
+      storageObject = {};
       rAFThrottler();
     }
   }
