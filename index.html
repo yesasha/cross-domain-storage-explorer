@@ -31,11 +31,11 @@ th, td {
 </head>
 <body>
 <div class="w3-bar w3-light-grey tabbar">
-  <button class="w3-bar-item w3-button w3-dark-grey localStorage">localStorage</button>
-  <button class="w3-bar-item w3-button sessionStorage">sessionStorage</button>
+  <button class="w3-bar-item w3-button w3-dark-grey localStorage" title="Implemented">localStorage</button>
+  <button class="w3-bar-item w3-button sessionStorage" title="Implemented">sessionStorage</button>
+  <button class="w3-bar-item w3-button cookie" title="Partially implemented">cookie</button>
   <button class="w3-bar-item w3-button IndexedDB" title="Not implemented">IndexedDB</button>
   <button class="w3-bar-item w3-button WebSQL" title="Not implemented">Web SQL</button>
-  <button class="w3-bar-item w3-button cookie" title="Partially implemented">cookie</button>
 </div>
 <main class="w3-container">
   <h1>Storage Explorer</h1>
@@ -99,7 +99,6 @@ addEventListener('message', function (ev) {
     rAFThrottler();
   } else if (ev.data.storage === 'cookie') {
     thatOrigin = ev.origin;
-    console.log(ev.data.data);
     var cookie = ev.data.data.split('; ');
     storageObject = {};
     if (cookie[0] !== '') {
@@ -213,12 +212,16 @@ function render (col, dir) {
   myStatus.classList.add('w3-pale-green');
   myStatus.classList.add('w3-border-green');
 
+
+  // New array representation
+  var newArr = [];
+
   if (window.opener) {
     var keys = Object.keys(storageObject);
     var length = keys.length;
   } else {
     if (activeStorage === 'cookie') {
-      var newArr = document.cookie.split('; ');
+      newArr = document.cookie.split('; ');
 
       if (newArr[0] !== '') {
         for (var i = 0; i < newArr.length; i++) {
@@ -253,9 +256,6 @@ function render (col, dir) {
 
   // Set the new class for the column
   th[sortingCol].classList.add(sortingDirection ? 'asc' : 'dsc');
-
-  // New array representation
-  var newArr = [];
 
   if (window.opener) {
     if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage' || activeStorage === 'cookie') {
