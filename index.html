@@ -211,8 +211,13 @@ function render (col, dir) {
 
       for (var i = 0; i < newArr.length; i++) {
         newArr[i] = newArr[i].split('=');
-        newArr[i][0] = decodeURIComponent(newArr[i][0]);
-        newArr[i][1] = decodeURIComponent(newArr[i][1]);
+        if (newArr[i].length === 2) {
+          newArr[i][0] = decodeURIComponent(newArr[i][0]);
+          newArr[i][1] = decodeURIComponent(newArr[i][1]);
+        } else {
+          newArr = [];
+        }
+
       }
 
       var length = newArr.length;
