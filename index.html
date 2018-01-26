@@ -256,10 +256,12 @@ function render (col, dir) {
   var newArr = [];
 
   if (window.opener) {
-    // storageObject to array
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      newArr[i] = [key, storageObject[key]];
+    if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage') {
+      // storageObject to array
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        newArr[i] = [key, storageObject[key]];
+      }
     }
   } else {
     if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage') {
