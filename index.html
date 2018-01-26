@@ -102,17 +102,14 @@ addEventListener('message', function (ev) {
     console.log(ev.data.data);
     var cookie = ev.data.data.split('; ');
     storageObject = {};
-    for (var i = 0; i < cookie.length; i++) {
-      cookie[i] = cookie[i].split('=');
-      if (cookie[i].length === 2) {
+    if (cookie[0] !== '') {
+      for (var i = 0; i < cookie.length; i++) {
+        cookie[i] = cookie[i].split('=');
         storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
-      } else {
-        cookie = [];
-        storageObject = {};
       }
-    }
 
-    rAFThrottler();
+      rAFThrottler();
+    }
   }
 }, false);
 
@@ -218,18 +215,18 @@ function render (col, dir) {
     if (activeStorage === 'cookie') {
       var newArr = document.cookie.split('; ');
 
-      for (var i = 0; i < newArr.length; i++) {
-        newArr[i] = newArr[i].split('=');
-        if (newArr[i].length === 2) {
+      if (newArr[0] !== '') {
+        for (var i = 0; i < newArr.length; i++) {
+          newArr[i] = newArr[i].split('=');
           newArr[i][0] = decodeURIComponent(newArr[i][0]);
           newArr[i][1] = decodeURIComponent(newArr[i][1]);
-        } else {
-          newArr = [];
         }
 
+        var length = newArr.length;
+      } else {
+        newArr = [];
+        var length = 0;
       }
-
-      var length = newArr.length;
     } else if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage') {
       var length = window[activeStorage].length;
     }
