@@ -98,14 +98,20 @@ addEventListener('message', function (ev) {
     storageObject = JSON.parse(ev.data.data);
     rAFThrottler();
   } else if (ev.data.storage === 'cookie') {
-    var cookie = document.cookie.split('; ');
+    thatOrigin = ev.origin;
+    var cookie = ev.data.data.split('; ');
     storageObject = {};
     for (var i = 0; i < cookie.length; i++) {
       cookie[i] = cookie[i].split('=');
       if (cookie[i].length === 2) {
         storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
+      } else {
+        cookie = [];
+        storageObject = {};
       }
     }
+
+    rAFThrottler();
   }
 }, false);
 
