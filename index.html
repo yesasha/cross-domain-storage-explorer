@@ -67,8 +67,6 @@ var main = document.querySelector('main');
 
 // Status
 var myStatus = main.querySelector('.status');
-var myStatusOrigin = myStatus.querySelector('h3');
-var myStatusMessage = myStatus.querySelector('p');
 
 // Bookmarklet
 var myBookmarklet = main.querySelector('a');
@@ -199,6 +197,10 @@ myTabBar.addEventListener('click', function (ev) {
       activeStorage = 'sessionStorage';
     } else if (target.classList.contains('cookie')) {
       activeStorage = 'cookie';
+    } else if (target.classList.contains('IndexedDB')) {
+      activeStorage = 'IndexedDB';
+    } else if (target.classList.contains('WebSQL')) {
+      activeStorage = 'Web SQL';
     }
 
     if (window.opener) {
@@ -242,14 +244,20 @@ function render (col, dir) {
     }
   }
 
-  myStatusOrigin.textContent = thatOrigin;
-  if (length === 0) {
-    myStatusMessage.innerHTML = activeStorage + ' is empty...';
-  } else if (length === 1) {
-    myStatusMessage.innerHTML = 'You have 1 item in ' + activeStorage;
+
+  if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage' || activeStorage === 'cookie') {
+    if (length === 0) {
+      myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>' + activeStorage + ' is empty...</p>';
+    } else if (length === 1) {
+      myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have 1 item in ' + activeStorage + '.</p>';
+    } else {
+      myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + length + ' items in ' + activeStorage + '.</p>';
+    }
   } else {
-    myStatusMessage.innerHTML = 'You have ' + length + ' items in ' + activeStorage;
+    myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
   }
+
+
 
   // Remove all sorting classes from table header row
   for (var i = 0; i < 2; i++) {
