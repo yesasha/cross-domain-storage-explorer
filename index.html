@@ -35,7 +35,7 @@ th, td {
   <button class="w3-bar-item w3-button sessionStorage">sessionStorage</button>
   <button class="w3-bar-item w3-button IndexedDB" title="Not implemented">IndexedDB</button>
   <button class="w3-bar-item w3-button WebSQL" title="Not implemented">Web SQL</button>
-  <button class="w3-bar-item w3-button cookie" title="Not implemented">cookie</button>
+  <button class="w3-bar-item w3-button cookie" title="Partially implemented">cookie</button>
 </div>
 <main class="w3-container">
   <h1>Storage Explorer</h1>
@@ -133,7 +133,12 @@ myTable.addEventListener('click', function (ev) {
         rAFThrottler();
       }
     } else if (activeStorage === 'cookie') {
-      // Not implemented
+      if (window.opener) {
+        window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
+      } else {
+        document.cookie = key.value.trim() + '=' + val.value.trim();
+        rAFThrottler();
+      }
     }
 
     key.value = '';
