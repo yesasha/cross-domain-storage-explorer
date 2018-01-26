@@ -40,9 +40,10 @@ th, td {
 <main class="w3-container">
   <h1>Storage Explorer</h1>
   <a href="javascript:(function(c,k,e,f,g,d,a,h,b){e!==location.origin&&(f=open(e+'{{pathname}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),addEventListener('message',function(l){if(l.source===f){a=l.data;b=a.storage;h=a.type;if('localStorage'===b||'sessionStorage'===b){c[b][h](a.key,a.value);a={};for(d=0;d<c[b].length;d++)g=c[b].key(d),a[g]=c[b].getItem(g);a=JSON.stringify(a)}else if('cookie'===b)'getItem'!==h&&(k[b]=a.value),a=k[b];else return;f.postMessage({storage:b,data:a},e)}},!1))})(window,document,'{{origin}}');">Storage Explorer</a>
-  <button class="w3-button">Reload</button>
   <div class="w3-panel w3-pale-red w3-leftbar w3-border-red status">
+    <h3>localhost</h3>
     <p>LocalStorage is not available...</p>
+    <button class="w3-button">Reload</button>
   </div>
   <table class="w3-table w3-section">
     <thead>
@@ -64,11 +65,23 @@ th, td {
 <script type="text/javascript">
 // Get all needed elements
 var main = document.querySelector('main');
+
+// Status
 var myStatus = main.querySelector('.status');
+var myStatusOrigin = myStatus.querySelector('h3');
+var myStatusMessage = myStatus.querySelector('p');
+
+// Bookmarklet
 var myBookmarklet = main.querySelector('a');
+
+// Reload Button
 var reloadButton = main.querySelector('button');
+
+// Tabs
 var myTabBar = document.querySelector('.tabbar');
 var myTabButtons = myTabBar.getElementsByTagName('button');
+
+// Table
 var myTable = document.getElementsByTagName('table')[0];
 var key = myTable.getElementsByTagName('input');
 var val = key[1];
@@ -81,17 +94,19 @@ var tr = myTbody.rows;
 var tBodyArray = [];
 var storageObject = {};
 
+// Global States
 // Sorting method
-var sortingDirection;
-var sortingCol;
-
+var sortingDirection = true;
+var sortingCol = 0;
 // Which storage
 var activeStorage = 'localStorage';
 
-var renderRequested;
-rAFThrottler(0, true);
-
+// Origin to be shown
 var thatOrigin = location.origin;
+
+var renderRequested;
+rAFThrottler();
+
 addEventListener('message', function (ev) {
   if (ev.data.storage === 'localStorage' || ev.data.storage === 'sessionStorage') {
     thatOrigin = ev.origin;
@@ -212,7 +227,6 @@ function render (col, dir) {
   myStatus.classList.add('w3-pale-green');
   myStatus.classList.add('w3-border-green');
 
-
   // New array representation
   var newArr = [];
 
@@ -240,12 +254,13 @@ function render (col, dir) {
     }
   }
 
+  myStatusOrigin.textContent = thatOrigin;
   if (length === 0) {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>' + activeStorage + ' is empty...</p>';
+    myStatusMessage.innerHTML = activeStorage + ' is empty...';
   } else if (length === 1) {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have 1 item in ' + activeStorage + '.</p>';
+    myStatusMessage.innerHTML = 'You have 1 item in ' + activeStorage;
   } else {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + length + ' items in ' + activeStorage + '.</p>';
+    myStatusMessage.innerHTML = 'You have ' + length + ' items in ' + activeStorage;
   }
 
   // Remove all sorting classes from table header row
