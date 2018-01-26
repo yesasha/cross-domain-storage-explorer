@@ -206,7 +206,19 @@ function render (col, dir) {
     var keys = Object.keys(storageObject);
     var length = keys.length;
   } else {
-    var length = window[activeStorage].length;
+    if (activeStorage === 'cookie') {
+      var newArr = document.cookie.split('; ');
+
+      for (var i = 0; i < newArr.length; i++) {
+        newArr[i] = newArr[i].split('=');
+        newArr[i][0] = decodeURIComponent(newArr[i][0]);
+        newArr[i][1] = decodeURIComponent(newArr[i][1]);
+      }
+
+      var length = newArr.length;
+    } else if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage') {
+      var length = window[activeStorage].length;
+    }
   }
 
   if (length === 0) {
@@ -244,15 +256,6 @@ function render (col, dir) {
         newArr[i] = [key, window[activeStorage].getItem(key)];
       }
 
-    } else if (activeStorage === 'cookie') {
-
-      var newArr = document.cookie.split('; ');
-
-      for (var i = 0; i < newArr.length; i++) {
-        newArr[i] = newArr[i].split('=');
-        newArr[i][0] = decodeURIComponent(newArr[i][0]);
-        newArr[i][1] = decodeURIComponent(newArr[i][1]);
-      }
     }
   }
 
