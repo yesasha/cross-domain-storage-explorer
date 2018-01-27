@@ -205,14 +205,6 @@ myTable.addEventListener('click', function (ev) {
 myTabBar.addEventListener('click', function (ev) {
   var target = ev.target;
   if (target.tagName === 'BUTTON') {
-    // // Remove all selected classes
-    // for (var i = 0; i < myTabButtons.length; i++) {
-    //   myTabButtons[i].classList.remove('w3-dark-grey');
-    // }
-
-    // // Set selected class
-    // target.classList.add('w3-dark-grey');
-
     // Set storage type
     if (target.classList.contains('localStorage')) {
       activeStorage = 'localStorage';
@@ -329,10 +321,6 @@ function render (col, dir) {
     }
   }
 
-  if (!isActiveStorage) {
-    return;
-  }
-
   // Remove all sorting classes from table header row
   for (var i = 0; i < 2; i++) {
     th[i].classList.remove('asc');
@@ -359,21 +347,6 @@ function render (col, dir) {
 
       var keys = Object.keys(storageObject);
       var length = keys.length;
-
-      // newArr = document.cookie.split('; ');
-
-      // if (newArr[0] !== '') {
-      //   for (var i = 0; i < newArr.length; i++) {
-      //     newArr[i] = newArr[i].split('=');
-      //     newArr[i][0] = decodeURIComponent(newArr[i][0]);
-      //     newArr[i][1] = decodeURIComponent(newArr[i][1]);
-      //   }
-
-      //   var length = newArr.length;
-      // } else {
-      //   newArr = [];
-      //   var length = 0;
-      // }
     } else {
       var length = window[activeStorage].length;
     }
@@ -389,24 +362,27 @@ function render (col, dir) {
 
   // New array representation
   var newArr = [];
-  if (window.opener || activeStorage === 'cookie') {
-    // storageObject to array
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      newArr[i] = [key, storageObject[key]];
-    }
-  } else {
-    // Storage to array
-    for (var i = 0; i < window[activeStorage].length; i++) {
-      var key = window[activeStorage].key(i);
-      newArr[i] = [key, window[activeStorage].getItem(key)];
-    }
-  }
 
-  // Sort according to current user selected method
-  newArr.sort(function (a, b) {
-    return myCompare(a[sortingCol], b[sortingCol], sortingDirection ? 1 : -1);
-  });
+  if (isActiveStorage) {
+    if (window.opener || activeStorage === 'cookie') {
+      // storageObject to array
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        newArr[i] = [key, storageObject[key]];
+      }
+    } else {
+      // Storage to array
+      for (var i = 0; i < window[activeStorage].length; i++) {
+        var key = window[activeStorage].key(i);
+        newArr[i] = [key, window[activeStorage].getItem(key)];
+      }
+    }
+
+    // Sort according to current user selected method
+    newArr.sort(function (a, b) {
+      return myCompare(a[sortingCol], b[sortingCol], sortingDirection ? 1 : -1);
+    });
+  }
 
   // Compare old table vs new table and if not match, refresh the data in the table.
   for (var i = 0; i < newArr.length; i++) {
