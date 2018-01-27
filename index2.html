@@ -243,6 +243,17 @@ myTabBar.addEventListener('click', function (ev) {
 }, false);
 
 function render (col, dir) {
+
+  // Add/remove selected classes for tab buttons
+  for (var i = 0; i < myTabButtons.length; i++) {
+    if (myTabButtons[i].classList.contains(activeStorage)) {
+      myTabButtons[i].classList.add('w3-dark-grey');
+    } else {
+      myTabButtons[i].classList.remove('w3-dark-grey');
+    }
+  }
+
+  // Add/remove classes for status
   if (activeStorage === 'localStorage') {
     if (isLocalStorage) {
       myStatus.classList.remove('w3-pale-red');
@@ -336,25 +347,13 @@ function render (col, dir) {
   th[sortingCol].classList.add(sortingDirection ? 'asc' : 'dsc');
 
 
-  // Add/remove selected classes for tab buttons
-  for (var i = 0; i < myTabButtons.length; i++) {
-    if (myTabButtons[i].classList.contains(activeStorage)) {
-      myTabButtons[i].classList.add('w3-dark-grey');
-    } else {
-      myTabButtons[i].classList.remove('w3-dark-grey');
-    }
-  }
-
-
-
-
   if (window.opener) {
     var keys = Object.keys(storageObject);
     var length = keys.length;
   } else {
     if (activeStorage === 'cookie') {
 
-      var cookie = data.data.split('; ');
+      var cookie = document.cookie.split('; ');
       storageObject = {};
       if (cookie[0] !== '') {
         for (var i = 0; i < cookie.length; i++) {
