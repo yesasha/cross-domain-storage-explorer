@@ -136,7 +136,9 @@ addEventListener('message', function (ev) {
   }
 }, false);
 
-window.opener && window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+if (isActiveStorage && window.opener) {
+  window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
+}
 
 myBookmarklet.href = myBookmarklet.href.replace('{{origin}}', location.origin).replace('{{pathname}}', location.pathname);
 
@@ -310,7 +312,7 @@ function render (col, dir) {
 
       myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
     }
-  } else if (activeStorage === 'Web SQL') {
+  } else if (activeStorage === 'WebSQL') {
     if (isWebSQL) {
       myStatus.classList.remove('w3-pale-red');
       myStatus.classList.remove('w3-border-red');
@@ -327,6 +329,11 @@ function render (col, dir) {
   }
 
 
+  if (!isActiveStorage) {
+    return;
+  }
+
+
   // Remove all sorting classes from table header row
   for (var i = 0; i < 2; i++) {
     th[i].classList.remove('asc');
@@ -336,43 +343,47 @@ function render (col, dir) {
   // Set the new class for the column
   th[sortingCol].classList.add(sortingDirection ? 'asc' : 'dsc');
 
-
-  if (window.opener) {
-    var keys = Object.keys(storageObject);
-    var length = keys.length;
-  } else {
-    if (activeStorage === 'cookie') {
-
-      var cookie = document.cookie.split('; ');
-      storageObject = {};
-      if (cookie[0] !== '') {
-        for (var i = 0; i < cookie.length; i++) {
-          cookie[i] = cookie[i].split('=');
-          storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
-        }
-      }
-
+  if (isActiveStorage) {
+    if (window.opener) {
       var keys = Object.keys(storageObject);
       var length = keys.length;
-
-      // newArr = document.cookie.split('; ');
-
-      // if (newArr[0] !== '') {
-      //   for (var i = 0; i < newArr.length; i++) {
-      //     newArr[i] = newArr[i].split('=');
-      //     newArr[i][0] = decodeURIComponent(newArr[i][0]);
-      //     newArr[i][1] = decodeURIComponent(newArr[i][1]);
-      //   }
-
-      //   var length = newArr.length;
-      // } else {
-      //   newArr = [];
-      //   var length = 0;
-      // }
     } else {
-      var length = window[activeStorage].length;
+      if (activeStorage === 'cookie') {
+
+        var cookie = document.cookie.split('; ');
+        storageObject = {};
+        if (cookie[0] !== '') {
+          for (var i = 0; i < cookie.length; i++) {
+            cookie[i] = cookie[i].split('=');
+            storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
+          }
+        }
+
+        var keys = Object.keys(storageObject);
+        var length = keys.length;
+
+        // newArr = document.cookie.split('; ');
+
+        // if (newArr[0] !== '') {
+        //   for (var i = 0; i < newArr.length; i++) {
+        //     newArr[i] = newArr[i].split('=');
+        //     newArr[i][0] = decodeURIComponent(newArr[i][0]);
+        //     newArr[i][1] = decodeURIComponent(newArr[i][1]);
+        //   }
+
+        //   var length = newArr.length;
+        // } else {
+        //   newArr = [];
+        //   var length = 0;
+        // }
+      } else {
+        var length = window[activeStorage].length;
+      }
     }
   }
+
+
+
 
   if (length === 0) {
     myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>' + activeStorage + ' is empty...</p>';
@@ -381,6 +392,8 @@ function render (col, dir) {
   } else {
     myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + length + ' items in ' + activeStorage + '</p>';
   }
+
+
 
   // New array representation
   var newArr = [];
