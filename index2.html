@@ -39,7 +39,7 @@ th, td {
 </div>
 <main class="w3-container">
   <h1>Storage Explorer</h1>
-  <a href="javascript:(function(c,k,e,f,g,d,a,h,b){e!==location.origin&&(f=open(e+'{{pathname}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),addEventListener('message',function(l){if(l.source===f){a=l.data;b=a.storage;h=a.type;if('localStorage'===b||'sessionStorage'===b){c[b][h](a.key,a.value);a={};for(d=0;d<c[b].length;d++)g=c[b].key(d),a[g]=c[b].getItem(g);a=JSON.stringify(a)}else if('cookie'===b)'getItem'!==h&&(k[b]=a.value),a=k[b];else return;f.postMessage({storage:b,data:a},e)}},!1))})(window,document,'{{origin}}');">Storage Explorer</a>
+  <a href="javascript:(function(c,k,e,f,g,d,a,h,b){e!==location.origin&&(f=open(e+'{{pathname}}','_blank','menubar=no,toolbar=no,status=no,personalbar=no'),addEventListener('message',function(l){if(l.source===f){a=l.data;b=a.storage;h=a.type;if('localStorage'===b||'sessionStorage'===b){c[b][h](a.key,a.value);a={};for(d=0;d<c[b].length;d++)g=c[b].key(d),a[g]=c[b].getItem(g);a=JSON.stringify(a)}else if('cookie'===b)'getItem'!==h&&(k[b]=a.key),a=k[b];else return;f.postMessage({storage:b,data:a},e)}},!1))})(window,document,'{{origin}}');">Storage Explorer</a>
   <div class="w3-panel w3-pale-red w3-leftbar w3-border-red status">
     <h3>localhost</h3>
     <p>LocalStorage is not available...</p>
@@ -140,64 +140,62 @@ if (isActiveStorage && window.opener) {
   window.opener.postMessage({type: 'getItem', storage: activeStorage}, '*');
 }
 
+// Customize bookmarklet to work for any page where the base app will be located
 myBookmarklet.href = myBookmarklet.href.replace('{{origin}}', location.origin).replace('{{pathname}}', location.pathname);
 
 // Table click handler
 myTable.addEventListener('click', function (ev) {
   var classList = ev.target.classList;
   var direction = !classList.contains('asc');
-  if (classList.contains('setItem')) {
-    key.focus();
+  if (isActiveStorage) {
+    if (classList.contains('setItem')) {
+      key.focus();
 
-    if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage') {
       if (window.opener) {
         window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
       } else {
-        // storageObject[key.value.trim()] = val.value.trim();
-        window[activeStorage].setItem(key.value.trim(), val.value.trim());
-        rAFThrottler();
-      }
-    } else if (activeStorage === 'cookie') {
-      if (window.opener) {
-        window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
-      } else {
-        document.cookie = key.value.trim() + '=' + val.value.trim();
-        rAFThrottler();
-      }
-    }
-
-    key.value = '';
-    val.value = '';
-  } else if (classList.contains('removeItem')) {
-    if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage') {
-      if (window.opener) {
-        window.opener.postMessage({type: 'removeItem', storage: activeStorage, key: ev.target.getAttribute('data-key')}, '*');
-      } else {
-        // delete storageObject[ev.target.getAttribute('data-key')];
-        window[activeStorage].removeItem(ev.target.getAttribute('data-key'));
-        rAFThrottler();
-      }
-    } else if (activeStorage === 'cookie') {
-      // Not implemented
-    }
-  } else if (classList.contains('clear')) {
-    if (confirm("Are you sure you want to delete all items?")) {
-      if (activeStorage === 'localStorage' || activeStorage === 'sessionStorage') {
-        if (window.opener) {
-          window.opener.postMessage({type: 'clear', storage: activeStorage}, '*');
+        if (activeStorage === 'cookie') {
+          document.cookie = key.value.trim() + '=' + val.value.trim();
+          rAFThrottler();
         } else {
-          // storageObject = {};
-          window[activeStorage].clear();
+          window[activeStorage].setItem(key.value.trim(), val.value.trim());
           rAFThrottler();
         }
-      } else if (activeStorage === 'cookie') {
-        // Not implemented
       }
+
+      key.value = '';
+      val.value = '';
+    } else if (classList.contains('removeItem')) {
+      if (window.opener) {
+        if (activeStorage === 'cookie') {
+          window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim() + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT'}, '*');
+        } else {
+          window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
+        }
+      } else {
+        if (activeStorage === 'cookie') {
+          document.cookie = key.value.trim() + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        } else {
+          window[activeStorage].removeItem(ev.target.getAttribute('data-key'));
+        }
+        rAFThrottler();
+      }
+    } else if (classList.contains('clear')) {
+      if (activeStorage !== 'cookie') {
+        if (confirm("Are you sure you want to delete all items?")) {
+          if (window.opener) {
+            window.opener.postMessage({type: 'clear', storage: activeStorage}, '*');
+          } else {
+            window[activeStorage].clear();
+            rAFThrottler();
+          }
+        }
+      }
+    } else if (classList.contains('key')) {
+      rAFThrottler(0, !sortingDirection);
+    } else if (classList.contains('value')) {
+      rAFThrottler(1, !sortingDirection);
     }
-  } else if (classList.contains('key')) {
-    rAFThrottler(0, direction);
-  } else if (classList.contains('value')) {
-    rAFThrottler(1, direction);
   }
 }, false);
 
@@ -278,47 +276,24 @@ function render (col, dir) {
       myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Not available...</p>';
     }
   } else if (activeStorage === 'cookie') {
-    if (isCookie) {
-      myStatus.classList.remove('w3-pale-red');
-      myStatus.classList.remove('w3-border-red');
-      myStatus.classList.add('w3-pale-green');
-      myStatus.classList.add('w3-border-green');
-    } else {
-      myStatus.classList.remove('w3-pale-green');
-      myStatus.classList.remove('w3-border-green');
-      myStatus.classList.add('w3-pale-red');
-      myStatus.classList.add('w3-border-red');
-
-      myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
-    }
+    myStatus.classList.remove('w3-pale-red');
+    myStatus.classList.remove('w3-border-red');
+    myStatus.classList.add('w3-pale-green');
+    myStatus.classList.add('w3-border-green');
   } else if (activeStorage === 'IndexedDB') {
-    if (isIndexedDB) {
-      myStatus.classList.remove('w3-pale-red');
-      myStatus.classList.remove('w3-border-red');
-      myStatus.classList.add('w3-pale-green');
-      myStatus.classList.add('w3-border-green');
-    } else {
-      myStatus.classList.remove('w3-pale-green');
-      myStatus.classList.remove('w3-border-green');
-      myStatus.classList.add('w3-pale-red');
-      myStatus.classList.add('w3-border-red');
+    myStatus.classList.remove('w3-pale-green');
+    myStatus.classList.remove('w3-border-green');
+    myStatus.classList.add('w3-pale-red');
+    myStatus.classList.add('w3-border-red');
 
-      myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
-    }
+    myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
   } else if (activeStorage === 'WebSQL') {
-    if (isWebSQL) {
-      myStatus.classList.remove('w3-pale-red');
-      myStatus.classList.remove('w3-border-red');
-      myStatus.classList.add('w3-pale-green');
-      myStatus.classList.add('w3-border-green');
-    } else {
-      myStatus.classList.remove('w3-pale-green');
-      myStatus.classList.remove('w3-border-green');
-      myStatus.classList.add('w3-pale-red');
-      myStatus.classList.add('w3-border-red');
+    myStatus.classList.remove('w3-pale-green');
+    myStatus.classList.remove('w3-border-green');
+    myStatus.classList.add('w3-pale-red');
+    myStatus.classList.add('w3-border-red');
 
-      myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
-    }
+    myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
   }
 
   // Remove all sorting classes from table header row
