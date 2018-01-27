@@ -330,34 +330,36 @@ function render (col, dir) {
   // Set the new class for the column
   th[sortingCol].classList.add(sortingDirection ? 'asc' : 'dsc');
 
-  if (window.opener) {
-    var keys = Object.keys(storageObject);
-    var length = keys.length;
-  } else {
-    if (activeStorage === 'cookie') {
-
-      var cookie = document.cookie.split('; ');
-      storageObject = {};
-      if (cookie[0] !== '') {
-        for (var i = 0; i < cookie.length; i++) {
-          cookie[i] = cookie[i].split('=');
-          storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
-        }
-      }
-
+  if (isActiveStorage) {
+    if (window.opener) {
       var keys = Object.keys(storageObject);
       var length = keys.length;
     } else {
-      var length = window[activeStorage].length;
-    }
-  }
+      if (activeStorage === 'cookie') {
 
-  if (length === 0) {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>' + activeStorage + ' is empty...</p>';
-  } else if (length === 1) {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have 1 item in ' + activeStorage + '</p>';
-  } else {
-    myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + length + ' items in ' + activeStorage + '</p>';
+        var cookie = document.cookie.split('; ');
+        storageObject = {};
+        if (cookie[0] !== '') {
+          for (var i = 0; i < cookie.length; i++) {
+            cookie[i] = cookie[i].split('=');
+            storageObject[decodeURIComponent(cookie[i][0])] = decodeURIComponent(cookie[i][1]);
+          }
+        }
+
+        var keys = Object.keys(storageObject);
+        var length = keys.length;
+      } else {
+        var length = window[activeStorage].length;
+      }
+    }
+
+    if (length === 0) {
+      myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>' + activeStorage + ' is empty...</p>';
+    } else if (length === 1) {
+      myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have 1 item in ' + activeStorage + '</p>';
+    } else {
+      myStatus.innerHTML = '<h3>' + thatOrigin + '</h3><p>You have ' + length + ' items in ' + activeStorage + '</p>';
+    }
   }
 
   // New array representation
