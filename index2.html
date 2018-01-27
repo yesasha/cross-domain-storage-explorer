@@ -146,7 +146,6 @@ myBookmarklet.href = myBookmarklet.href.replace('{{origin}}', location.origin).r
 // Table click handler
 myTable.addEventListener('click', function (ev) {
   var classList = ev.target.classList;
-  var direction = !classList.contains('asc');
   if (isActiveStorage) {
     if (classList.contains('setItem')) {
       key.focus();
@@ -174,7 +173,7 @@ myTable.addEventListener('click', function (ev) {
         }
       } else {
         if (activeStorage === 'cookie') {
-          document.cookie = key.value.trim() + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          document.cookie = ev.target.getAttribute('data-key') + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
         } else {
           window[activeStorage].removeItem(ev.target.getAttribute('data-key'));
         }
