@@ -151,7 +151,11 @@ myTable.addEventListener('click', function (ev) {
       key.focus();
 
       if (window.opener) {
-        window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
+        if (activeStorage === 'cookie') {
+          window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim() + '=' + val.value.trim()}, '*');
+        } else {
+          window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
+        }
       } else {
         if (activeStorage === 'cookie') {
           document.cookie = key.value.trim() + '=' + val.value.trim();
@@ -167,9 +171,9 @@ myTable.addEventListener('click', function (ev) {
     } else if (classList.contains('removeItem')) {
       if (window.opener) {
         if (activeStorage === 'cookie') {
-          window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim() + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT'}, '*');
+          window.opener.postMessage({type: 'removeItem', storage: activeStorage, key: key.value.trim() + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT'}, '*');
         } else {
-          window.opener.postMessage({type: 'setItem', storage: activeStorage, key: key.value.trim(), value: val.value.trim()}, '*');
+          window.opener.postMessage({type: 'removeItem', storage: activeStorage, key: key.value.trim()}, '*');
         }
       } else {
         if (activeStorage === 'cookie') {
