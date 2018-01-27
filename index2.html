@@ -267,8 +267,6 @@ function render (col, dir) {
       myStatus.classList.add('w3-border-red');
 
       myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Not available...</p>';
-
-      return;
     }
   } else if (activeStorage === 'sessionStorage') {
     if (isSessionStorage) {
@@ -283,8 +281,6 @@ function render (col, dir) {
       myStatus.classList.add('w3-border-red');
 
       myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Not available...</p>';
-
-      return;
     }
   } else if (activeStorage === 'cookie') {
     if (isCookie) {
@@ -299,8 +295,6 @@ function render (col, dir) {
       myStatus.classList.add('w3-border-red');
 
       myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
-
-      return;
     }
   } else if (activeStorage === 'IndexedDB') {
     if (isIndexedDB) {
@@ -315,8 +309,6 @@ function render (col, dir) {
       myStatus.classList.add('w3-border-red');
 
       myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
-
-      return;
     }
   } else if (activeStorage === 'Web SQL') {
     if (isWebSQL) {
@@ -331,8 +323,6 @@ function render (col, dir) {
       myStatus.classList.add('w3-border-red');
 
       myStatus.innerHTML = '<h3>' + activeStorage + '</h3><p>Support not implemented...</p>';
-
-      return;
     }
   }
 
